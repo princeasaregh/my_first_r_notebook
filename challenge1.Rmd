@@ -1,0 +1,101 @@
+---
+title: "Challenge_1"
+author: "Prince"
+date: "2022-12-01"
+output: html_document
+---
+
+# This is a header in markdown
+
+## Insert r chunk below
+
+```{r load-data, message=FALSE}
+library(tidyverse)
+library(kableExtra)
+library(rmarkdown)
+
+# This is a comment in r chink
+
+# Load dataset
+pop_data <- read_csv("data/gapminder_data.csv")
+
+# create a table with data from European countries in 2007 showing the countries
+# with the largest life expectancy on top
+
+euro_data_tbl <- pop_data %>%
+                filter(continent == "Europe" & year == 2007) %>% 
+                select(-continent, -year) %>% 
+                arrange(desc(lifeExp)) %>% 
+                rename(Country = country, "Population Size" = pop,
+                       "Life Expectancy" = lifeExp, "GDP" = gdpPercap) 
+
+
+
+```
+
+Here we have our dataset...
+
+```{r create-table}
+euro_data_tbl %>% 
+  kbl() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+
+
+```
+
+Here is an example of how to display a massive table
+
+```{r page-table}
+paged_table(euro_data_tbl)
+```
+
+Next we add a figure
+
+```{r fig-data}
+#keep on European data and change year to factor
+euro_data_fig <- pop_data %>% 
+                    filter(continent == "Europe")  %>% 
+                    mutate(year=as_factor(year))
+
+```
+
+The life expectancy for Europe over the years is plotted as following:
+
+```{r fig, warning=FALSE, fig.cap="Life Expectancy in Europe over the years"}
+#Euro plot
+euro_plot <- euro_data_fig %>%
+                ggplot(mapping=aes(x=year, y=lifeExp)) +
+                geom_violin() +
+                stat_summary(fun.y = median, geom = "point")
+
+#draw euro plot
+euro_plot
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
